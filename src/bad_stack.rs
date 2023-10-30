@@ -103,7 +103,7 @@ impl<T> Drop for List<T> {
 
 #[cfg(test)]
 mod test {
-    use crate::first::{Link, List};
+    use crate::bad_stack::{Link, List};
 
     #[test]
     fn new_create_an_empty_list() {
