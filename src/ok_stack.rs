@@ -120,7 +120,7 @@ impl <'a, T> Iterator for IterMut<'a, T> {
  
 #[cfg(test)]
 mod test {
-    use crate::ok_stack::{List};
+    use crate::ok_stack::List;
 
     #[test]
     fn new_create_an_empty_list() {
