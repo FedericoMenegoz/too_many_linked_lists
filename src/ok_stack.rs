@@ -8,26 +8,22 @@ struct Node<T> {
     next: Link<T>,
 }
 
-
 type Link<T> = Option<Box<Node<T>>>;
-
 
 pub struct IntoIter<T>(List<T>);
 
 pub struct Iter<'a, T> {
-    next: Option<&'a Node<T>>
+    next: Option<&'a Node<T>>,
 }
 
 pub struct IterMut<'a, T> {
-    next: Option<&'a mut Node<T>>
+    next: Option<&'a mut Node<T>>,
 }
 
 impl<T> List<T> {
     /// Create a new list.
     pub fn new() -> Self {
-        List {
-            head: None,
-        }
+        List { head: None }
     }
 
     /// Push a new node at the front of the list.
@@ -63,19 +59,20 @@ impl<T> List<T> {
         IntoIter(self).into_iter()
     }
 
-    pub fn iter<>(& self) -> Iter<T> {
-        Iter { next: self.head.as_deref() }
+    pub fn iter(&self) -> Iter<T> {
+        Iter {
+            next: self.head.as_deref(),
+        }
     }
 
-    pub fn iter_mut<>(& mut self) -> IterMut<T> {
-        IterMut { next: self.head.as_deref_mut() }
+    pub fn iter_mut(&mut self) -> IterMut<T> {
+        IterMut {
+            next: self.head.as_deref_mut(),
+        }
     }
-
 }
 
-
 impl<T> Drop for List<T> {
-    
     fn drop(&mut self) {
         let mut current_node = self.head.take();
 
@@ -86,9 +83,7 @@ impl<T> Drop for List<T> {
     }
 }
 
-
-impl <T> Iterator for IntoIter<T> {
-
+impl<T> Iterator for IntoIter<T> {
     type Item = T;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -96,7 +91,7 @@ impl <T> Iterator for IntoIter<T> {
     }
 }
 
-impl <'a, T> Iterator for Iter<'a, T>  {
+impl<'a, T> Iterator for Iter<'a, T> {
     type Item = &'a T;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -107,7 +102,7 @@ impl <'a, T> Iterator for Iter<'a, T>  {
     }
 }
 
-impl <'a, T> Iterator for IterMut<'a, T> {
+impl<'a, T> Iterator for IterMut<'a, T> {
     type Item = &'a mut T;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -117,19 +112,14 @@ impl <'a, T> Iterator for IterMut<'a, T> {
         })
     }
 }
- 
+
 #[cfg(test)]
 mod test {
     use crate::ok_stack::List;
 
     #[test]
     fn new_create_an_empty_list() {
-        assert_eq!(
-            List::<i32>::new(),
-            List {
-                head: None
-            }
-        );
+        assert_eq!(List::<i32>::new(), List { head: None });
     }
 
     #[test]
@@ -160,53 +150,51 @@ mod test {
         assert_eq!(l.pop(), None);
     }
     #[test]
-    fn peek_ref_empty_list () {
+    fn peek_ref_empty_list() {
         let l = List::<i32>::new();
         assert_eq!(l.peek(), None)
     }
     #[test]
-    fn peek_ref () {
+    fn peek_ref() {
         let mut l = List::new();
 
         l.push(1);
         assert_eq!(l.peek(), Some(&1))
     }
     #[test]
-    fn peek_mut_ref_empty_list () {
+    fn peek_mut_ref_empty_list() {
         let mut l = List::<i32>::new();
         assert_eq!(l.peek_mut(), None)
     }
 
     #[test]
-    fn peek_mut_ref () {
+    fn peek_mut_ref() {
         let mut l = List::new();
 
         l.push(1);
-        l.peek_mut().map(|value| {
-            *value = 2
-        });
+        l.peek_mut().map(|value| *value = 2);
         assert_eq!(l.peek_mut(), Some(&mut 2))
     }
 
     #[test]
     fn list_into_iter() {
         let mut list = List::new();
-        
+
         list.push(1);
         list.push(2);
         list.push(3);
-        
-        assert_eq!(list.into_iter().collect::<Vec<i32>>(), vec![3,2,1]);
+
+        assert_eq!(list.into_iter().collect::<Vec<i32>>(), vec![3, 2, 1]);
     }
 
     #[test]
     fn list_iter() {
         let mut list = List::new();
-        
+
         list.push(1);
         list.push(2);
         list.push(3);
-        
+
         let mut iter = list.iter();
         assert_eq!(iter.next(), Some(&3));
         assert_eq!(iter.next(), Some(&2));
@@ -217,7 +205,7 @@ mod test {
     #[test]
     fn list_iter_mut() {
         let mut list = List::new();
-        
+
         list.push(1);
         list.push(2);
         list.push(3);
@@ -227,7 +215,5 @@ mod test {
         assert_eq!(iter.next(), Some(&mut 3));
         assert_eq!(iter.next(), Some(&mut 2));
         assert_eq!(iter.next(), None);
-
-
     }
 }

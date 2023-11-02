@@ -1,38 +1,41 @@
 use std::rc::Rc;
 
 pub struct List<T> {
-    head: Link<T>
+    head: Link<T>,
 }
 
-pub struct Iter<'a, T>{
-    next: Option<&'a Node<T>>
+pub struct Iter<'a, T> {
+    next: Option<&'a Node<T>>,
 }
 type Link<T> = Option<Rc<Node<T>>>;
 
-
 struct Node<T> {
     val: T,
-    next: Link<T>
+    next: Link<T>,
 }
 
-impl <T> List <T> {
+impl<T> List<T> {
     /// Create an empty list.
     pub fn new() -> Self {
         List { head: None }
     }
 
     /// Takes a list and a val and return a new list with the new val in front.
-    pub fn prepend(&self, val:T) -> List<T> {
+    pub fn prepend(&self, val: T) -> List<T> {
         let new_node = Node {
             val,
-            next: self.head.clone()
+            next: self.head.clone(),
         };
-        List { head: Some(Rc::new(new_node)) }
+        List {
+            head: Some(Rc::new(new_node)),
+        }
     }
 
     /// Return a reference to the tail of the list.
     pub fn tail(&self) -> List<T> {
-        List { head: self.head.as_ref().and_then(|node| node.next.clone()) }
+        List {
+            head: self.head.as_ref().and_then(|node| node.next.clone()),
+        }
     }
 
     /// Return a reference to the value in front of the list.
@@ -42,12 +45,13 @@ impl <T> List <T> {
 
     /// Return an Iterator of immutable reference
     pub fn iter(&self) -> Iter<T> {
-        Iter { next: self.head.as_deref() }
+        Iter {
+            next: self.head.as_deref(),
+        }
     }
+}
 
-} 
-
-impl <'a, T> Iterator for Iter<'a, T> {
+impl<'a, T> Iterator for Iter<'a, T> {
     type Item = &'a T;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -63,7 +67,6 @@ mod test {
 
     #[test]
     fn basics() {
-        
         let list = List::<i32>::new();
         assert_eq!(list.head(), None);
 
@@ -88,5 +91,4 @@ mod test {
         assert_eq!(iter.next(), Some(&1));
         assert_eq!(iter.next(), None);
     }
-
 }

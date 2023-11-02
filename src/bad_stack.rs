@@ -55,32 +55,29 @@ impl<T> List<T> {
     // -----------------------------------------
     //        OPTIMIZED POP VERSION
     // -----------------------------------------
-    pub fn pop (&mut self) -> Option<T> {
+    pub fn pop(&mut self) -> Option<T> {
         match self.pop_node() {
             Link::More(l) => Some(l.val),
-            Link::Empty => None
+            Link::Empty => None,
         }
     }
     // Internal function to benefit both pop() and drop() [Bonus Section for Premature Optimization]
     fn pop_node(&mut self) -> Link<T> {
-
         let node_to_delete = mem::replace(&mut self.head, Link::Empty);
-        
+
         match node_to_delete {
-            Link::More(mut l) => { 
+            Link::More(mut l) => {
                 mem::swap(&mut self.head, &mut l.next);
                 Link::More(l)
-            },
-            Link::Empty => Link::Empty
+            }
+            Link::Empty => Link::Empty,
         }
     }
 }
 
-
 impl<T> Drop for List<T> {
-
     // Before deallocating, the head needs to be fully dropped, which means that every node needs to be dropped,
-    // each of which will be deallocated only after the drop finishes. This may lead to pushing many drops onto 
+    // each of which will be deallocated only after the drop finishes. This may lead to pushing many drops onto
     // the stack, potentially causing a stack overflow.
     // Implementing the trait ourselves can help avoid this problem: iterating through the list while there
     // are some nodes and dropping each node in every cycle.
@@ -97,7 +94,7 @@ impl<T> Drop for List<T> {
     // }
 
     fn drop(&mut self) {
-        while let Link::More(_some_node) = self.pop_node() { }
+        while let Link::More(_some_node) = self.pop_node() {}
     }
 }
 
